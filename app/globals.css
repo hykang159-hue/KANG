@@ -1,26 +1,423 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --court-deep: #14382a;
+  --court-mid: #1f5c42;
+  --court-light: #2f7a57;
+  --chalk: #f4f7f2;
+  --chalk-muted: #c5d4cb;
+  --ball: #d4f00f;
+  --ink: #0e1f18;
+  --surface: #e8f0ea;
+  --background: var(--surface);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), sans-serif;
+}
+
+/* —— Hero —— */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+  color: var(--chalk);
+}
+
+.hero-court {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(160deg, rgba(8, 28, 20, 0.55) 0%, rgba(20, 56, 42, 0.25) 45%, rgba(8, 28, 20, 0.7) 100%),
+    radial-gradient(ellipse 80% 50% at 70% 40%, rgba(212, 240, 15, 0.12), transparent 55%),
+    linear-gradient(180deg, var(--court-light) 0%, var(--court-mid) 40%, var(--court-deep) 100%);
+  animation: courtPulse 12s ease-in-out infinite alternate;
+}
+
+.hero-court::before {
+  content: "";
+  position: absolute;
+  inset: 12% 8%;
+  border: 2px solid rgba(244, 247, 242, 0.35);
+  border-radius: 2px;
+  background:
+    linear-gradient(90deg, transparent 49.6%, rgba(244, 247, 242, 0.5) 49.6%, rgba(244, 247, 242, 0.5) 50.4%, transparent 50.4%),
+    linear-gradient(0deg, transparent 72%, rgba(244, 247, 242, 0.28) 72%, rgba(244, 247, 242, 0.28) 72.5%, transparent 72.5%);
+  box-shadow: inset 0 0 0 1px rgba(244, 247, 242, 0.12);
+  animation: linesReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-court::after {
+  content: "";
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  right: 18%;
+  top: 28%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, #e8ff6a, var(--ball) 55%, #a8c400);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  animation: ballFloat 4.5s ease-in-out infinite;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, calc(100% - 2.5rem));
+  margin: 0 auto;
+  padding: 5rem 0 4.5rem;
+  animation: riseIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.brand-mark {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(3.5rem, 12vw, 7.5rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.brand-mark span {
+  color: var(--ball);
+}
+
+.hero-copy {
+  max-width: 28rem;
+  margin: 0 0 1.75rem;
+  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--chalk-muted);
+}
+
+.cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0 1.35rem;
+  border: 1.5px solid transparent;
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.cta-primary {
+  background: var(--ball);
+  color: var(--ink);
+}
+
+.cta-primary:hover {
+  transform: translateY(-2px);
+  background: #e4ff45;
+}
+
+.cta-ghost {
+  border-color: rgba(244, 247, 242, 0.45);
+  color: var(--chalk);
+  background: transparent;
+}
+
+.cta-ghost:hover {
+  border-color: var(--chalk);
+  background: rgba(244, 247, 242, 0.08);
+}
+
+/* —— Lineup —— */
+.lineup-section {
+  padding: 4.5rem 0 5.5rem;
+  background:
+    linear-gradient(180deg, #dfe9e2 0%, var(--surface) 18%, #f3f7f4 100%);
+}
+
+.section-inner {
+  width: min(1120px, calc(100% - 2.5rem));
+  margin: 0 auto;
+}
+
+.section-header {
+  margin-bottom: 2rem;
+}
+
+.section-header h2 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.85rem, 4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.section-header p {
+  margin: 0;
+  max-width: 28rem;
+  color: #3d5a4c;
+  line-height: 1.5;
+}
+
+.brand-tabs {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.75rem;
+  scrollbar-width: thin;
+}
+
+.brand-tab {
+  flex: 0 0 auto;
+  min-height: 2.6rem;
+  padding: 0 1.1rem;
+  border: 1.5px solid #b7cfc2;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.brand-tab:hover {
+  border-color: var(--court-mid);
+}
+
+.brand-tab.is-active {
+  background: var(--brand-accent, var(--court-deep));
+  border-color: var(--brand-accent, var(--court-deep));
+  color: #fff;
+}
+
+.brand-panel {
+  animation: panelIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.brand-intro {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #b7cfc2;
+}
+
+.brand-origin {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-accent, var(--court-mid));
+}
+
+.brand-intro h3 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  letter-spacing: -0.02em;
+}
+
+.brand-summary {
+  margin: 0;
+  max-width: 36rem;
+  color: #3d5a4c;
+  line-height: 1.55;
+}
+
+.racket-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.racket-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem 2rem;
+  align-items: center;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid #c5d6cc;
+  opacity: 0;
+  animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.racket-row:last-child {
+  border-bottom: none;
+}
+
+.racket-feel {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-accent, var(--court-mid));
+}
+
+.racket-main h4 {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+}
+
+.racket-main p {
+  margin: 0;
+  color: #3d5a4c;
+  line-height: 1.45;
+}
+
+.racket-specs {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+}
+
+.racket-specs div {
+  text-align: right;
+}
+
+.racket-specs dt {
+  margin: 0 0 0.15rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6a8576;
+}
+
+.racket-specs dd {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.site-footer {
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #5a7466;
+  background: #dfe9e2;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes linesReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ballFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes courtPulse {
+  from {
+    filter: saturate(1);
+  }
+  to {
+    filter: saturate(1.12) brightness(1.03);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-court::after {
+    width: 48px;
+    height: 48px;
+    right: 12%;
+    top: 22%;
+  }
+
+  .hero-content {
+    padding-bottom: 3.25rem;
+  }
+
+  .racket-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .racket-specs {
+    justify-content: flex-start;
+  }
+
+  .racket-specs div {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .racket-row {
+    opacity: 1;
+  }
 }
