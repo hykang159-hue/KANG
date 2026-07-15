@@ -1,0 +1,28 @@
+---
+description: Use camelCase for all variable names in this project
+alwaysApply: true
+---
+
+# Variable Naming: camelCase
+
+All variable names must use **camelCase**. Do not use snake_case, PascalCase, or SCREAMING_SNAKE_CASE for variables.
+
+```typescript
+// ❌ BAD
+const user_name = "kim";
+const UserName = "kim";
+const USER_NAME = "kim";
+
+// ✅ GOOD
+const userName = "kim";
+```
+
+Applies to:
+- Local variables
+- Function parameters
+- Object properties when naming in new code
+- Destructured bindings
+
+Exceptions (keep conventional casing):
+- React components and classes: PascalCase
+- True constants / env-style enums when already established: SCREAMING_SNAKE_CASE only if the codebase already uses that pattern for constants
