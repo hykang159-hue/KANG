@@ -115,15 +115,16 @@ async function loadWatchDays(): Promise<DayAvailability[]> {
     return { year, month };
   });
 
-  const monthDays = await Promise.all(
-    months.map(({ year, month }) =>
-      fetchMonthAvailability(year, month, { bypassCache: true }),
-    ),
-  );
+  // Sequential month fetches avoid concurrent YCS login races.
+  const days: DayAvailability[] = [];
+  for (const { year, month } of months) {
+    const monthDays = await fetchMonthAvailability(year, month, {
+      bypassCache: true,
+    });
+    days.push(...monthDays);
+  }
 
-  return monthDays
-    .flat()
-    .filter((day) => wantedDates.has(day.date));
+  return days.filter((day) => wantedDates.has(day.date));
 }
 
 export type AlertTickResult = {

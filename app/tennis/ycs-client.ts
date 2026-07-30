@@ -53,6 +53,7 @@ export class YcsSessionError extends Error {
 }
 
 let sessionState: SessionState | null = null;
+let sessionLock: Promise<SessionState> | null = null;
 const monthCache = new Map<string, CacheEntry>();
 
 function pad2(value: number): string {
@@ -279,17 +280,36 @@ async function ensureSession(forceRefresh = false): Promise<SessionState> {
     return sessionState;
   }
 
-  sessionState = await loginWithCredentials();
-  if (!sessionState.memNo && sessionState.cookie) {
-    sessionState.memNo = await fetchMemNo(sessionState.cookie);
+  if (sessionLock) {
+    const locked = await sessionLock;
+    if (!forceRefresh && locked.cookie && locked.memNo) {
+      return locked;
+    }
   }
-  if (!sessionState.memNo) {
-    sessionState = null;
-    throw new YcsSessionError(
-      "YCS 세션이 만료되었거나 로그인이 필요합니다. .env.local 값을 갱신하세요.",
-    );
+
+  sessionLock = (async () => {
+    if (!forceRefresh && sessionState?.cookie && sessionState.memNo) {
+      return sessionState;
+    }
+
+    sessionState = await loginWithCredentials();
+    if (!sessionState.memNo && sessionState.cookie) {
+      sessionState.memNo = await fetchMemNo(sessionState.cookie);
+    }
+    if (!sessionState.memNo) {
+      sessionState = null;
+      throw new YcsSessionError(
+        "YCS 세션이 만료되었거나 로그인이 필요합니다. .env.local 값을 갱신하세요.",
+      );
+    }
+    return sessionState;
+  })();
+
+  try {
+    return await sessionLock;
+  } finally {
+    sessionLock = null;
   }
-  return sessionState;
 }
 
 async function postJson<T>(
