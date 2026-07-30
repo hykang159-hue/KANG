@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "trading:scheduler": "node scripts/trading-scheduler.mjs"
+    "trading:scheduler": "node scripts/trading-scheduler.mjs",
+    "tennis:alerts": "node --env-file=.env.local scripts/tennis-alert-scheduler.mjs"
   },
   "dependencies": {
     "lightweight-charts": "^5.2.0",

@@ -138,5 +138,9 @@ mem_no={MEM_NO}
 헤더: `Authorization: Bearer <TENNIS_ALERT_SECRET>`
 
 스케줄:
-- [`vercel.json`](../vercel.json) Cron `*/5 * * * *` (플랜에 따라 제한될 수 있음)
-- [`.github/workflows/tennis-alert.yml`](../.github/workflows/tennis-alert.yml) 5분마다 호출 (repo secrets: `TENNIS_ALERT_URL`, `TENNIS_ALERT_SECRET`)
+- Vercel Hobby는 Cron이 **하루 1회**만 가능 → [`vercel.json`](../vercel.json)은 `0 9 * * *` (UTC 09:00 = 한국 18:00) 백업용
+- **5분 주기**는 GitHub Actions [`.github/workflows/tennis-alert.yml`](../.github/workflows/tennis-alert.yml)
+  - Repo Settings → Secrets에 추가:
+    - `TENNIS_ALERT_URL` = `https://kang-nu.vercel.app/api/tennis/alerts/tick`
+    - `TENNIS_ALERT_SECRET` = Vercel과 동일한 시크릿
+- 로컬 상시 실행: `npm run tennis:alerts`
