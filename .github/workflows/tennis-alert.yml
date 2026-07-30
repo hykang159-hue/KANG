@@ -1,0 +1,23 @@
+name: Tennis court alerts
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call alert tick API
+        env:
+          ALERT_URL: ${{ secrets.TENNIS_ALERT_URL }}
+          ALERT_SECRET: ${{ secrets.TENNIS_ALERT_SECRET }}
+        run: |
+          if [ -z "$ALERT_URL" ] || [ -z "$ALERT_SECRET" ]; then
+            echo "Missing TENNIS_ALERT_URL or TENNIS_ALERT_SECRET repo secrets"
+            exit 1
+          fi
+          curl -fsS -X POST "$ALERT_URL" \
+            -H "Authorization: Bearer $ALERT_SECRET" \
+            -H "Accept: application/json"

@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/tennis/alerts/tick",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}

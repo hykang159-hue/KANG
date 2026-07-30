@@ -121,3 +121,22 @@ mem_no={MEM_NO}
 - [x] `TENNIS_DATA_SOURCE=ycs` 라우트 연결
 - [x] 세션 만료 UI 메시지
 - [x] 예약 POST 미호출
+
+## 텔레그램 빈자리 알림
+
+평일 `18:00~22:00`, 주말 `17:00~22:00`에 겹치는 슬롯에서 **새로 생긴** 가능 코트만 알림합니다.
+오늘부터 7일 앞까지 조회합니다.
+
+| 환경변수 | 설명 |
+|----------|------|
+| `TELEGRAM_BOT_TOKEN` | BotFather 토큰 |
+| `TELEGRAM_CHAT_ID` | 수신 chat id |
+| `TENNIS_ALERT_SECRET` | tick API Bearer 시크릿 |
+| `CRON_SECRET` | Vercel Cron용 (보통 `TENNIS_ALERT_SECRET`과 동일) |
+
+엔드포인트: `POST|GET /api/tennis/alerts/tick`  
+헤더: `Authorization: Bearer <TENNIS_ALERT_SECRET>`
+
+스케줄:
+- [`vercel.json`](../vercel.json) Cron `*/5 * * * *` (플랜에 따라 제한될 수 있음)
+- [`.github/workflows/tennis-alert.yml`](../.github/workflows/tennis-alert.yml) 5분마다 호출 (repo secrets: `TENNIS_ALERT_URL`, `TENNIS_ALERT_SECRET`)
