@@ -6,6 +6,9 @@ import {
 } from "@/app/tennis/ycs-client";
 import type { AvailabilityResponse } from "@/app/tennis/types";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 function parseYearMonth(searchParams: URLSearchParams): {
   year: number;
   month: number;
